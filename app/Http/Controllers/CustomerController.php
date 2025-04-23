@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Customer;
 use App\Services\CustomerService;
 use Illuminate\Http\JsonResponse;
+use App\Http\Resources\customerResource;
 use App\Http\Requests\CustomerRequest\StoreCustomerData;
 use App\Http\Requests\CustomerRequest\UpdateCustomerData;
 
@@ -21,7 +22,7 @@ class CustomerController extends Controller
 
     /**
      * Constructor for dependency injection
-     * 
+     *
      * @param CustomerService $customerService Injected customer service instance
      */
     public function __construct(CustomerService $customerService)
@@ -29,9 +30,23 @@ class CustomerController extends Controller
         $this->customerService = $customerService;
     }
 
+    public function index()
+    {
+        $result = $this->customerService->getAllCustomers();
+        return $result['status'] === 200
+                ? $this->paginated($result['data'], customerResource::class, $result['message'], $result['status'])
+                : $this->error($result['data'], $result['message'], $result['status']);
+    }
+    public function show($id)
+    {
+        $result = $this->customerService->getCustomerDebts($id);
+        return $result['status'] === 200
+             ? $this->success($result['data'], $result['message'], $result['status'])
+             : $this->error($result['data'], $result['message'], $result['status']);
+    }
     /**
      * Store a new customer record
-     * 
+     *
      * @param StoreCustomerData $request Validated request data containing:
      *    - name: string (required)
      *    - phone: string (required)
@@ -48,14 +63,14 @@ class CustomerController extends Controller
         $result = $this->customerService->createCustomer($request->validated());
 
         // Return appropriate response based on status code
-        return $result['status'] === 201
+        return $result['status'] === 200
             ? $this->success($result['data'], $result['message'], $result['status'])
             : $this->error($result['data'], $result['message'], $result['status']);
     }
 
     /**
      * Update an existing customer record
-     * 
+     *
      * @param UpdateCustomerData $request Validated request data containing update fields
      * @param Customer $customer Customer model to be updated
      * @return JsonResponse Returns JSON response with operation result
@@ -76,7 +91,7 @@ class CustomerController extends Controller
 
     /**
      * Delete a customer record
-     * 
+     *
      * @param Customer $customer Customer model to be deleted
      * @return JsonResponse Returns JSON response with operation result
      */

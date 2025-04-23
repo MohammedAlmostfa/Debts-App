@@ -11,6 +11,42 @@ use Illuminate\Support\Facades\Log;
  */
 class CustomerService
 {
+
+    public function getAllCustomers()
+    {
+        try {
+            // Fetch all customers with pagination (10 customers per page)
+            $customers = Customer::paginate(10);
+
+            // Return successful response
+            return $this->successResponse($customers, 'Customers retrieved successfully', 200);
+        } catch (Exception $e) {
+            // Log any error that occurs
+            Log::error('Get customers error: ' . $e->getMessage());
+
+            // Return error response
+            return $this->errorResponse('Failed to retrieve customers');
+        }
+    }
+    public function getCustomerDebts($id)
+    {
+        try {
+            // Fetch the customer with their debts using eager loading
+            $customer = Customer::with('debts')->findOrFail($id);
+
+            // Return successful response with the debts
+            return $this->successResponse($customer->debts, 'Customer debts retrieved successfully', 200);
+        } catch (Exception $e) {
+            // Log any error that occurs
+            Log::error('Error fetching customer debts: ' . $e->getMessage());
+
+            // Return error response
+            return $this->errorResponse('Failed to retrieve customer debts');
+        }
+    }
+
+
+
     /**
      * Create new customer
      * @param array $data ['name', 'phone', 'notes']

@@ -1,9 +1,7 @@
 <?php
-
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,11 +11,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $user=User::created([
-           'name'=>'almostfa',
-           'password'=>'m0h@mmed',
+        $user = User::create([
+            'name' => 'almostfa',
+            'password' => bcrypt('m0h@mmed'),
         ]);
-
-
     }
 }

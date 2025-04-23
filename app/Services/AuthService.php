@@ -3,109 +3,96 @@
 namespace App\Services;
 
 use Exception;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
-use Kyojin\JWT\Facades\JWT;
+use Illuminate\Support\Facades\Hash;
 
 class AuthService
 {
     /**
-     * Handle user login.
+     * Handles user login.
      *
      * @param array $credentials User credentials (email and password).
-     * @return array Response with status, message, and token data.
+     * @return array Response including the status, message, and token data.
      */
     public function login($credentials)
     {
         try {
-            // Attempt to authenticate the user using JWT
-            if (!$token = JWT::attempt($credentials)) {
+            // Fetch the single user's password from the database
+            $user = User::first(); // الحصول على المستخدم الأول (المستخدم الوحيد)
+
+            // Check if the provided password matches the hashed password
+            if (!Hash::check($credentials['password'], $user->password)) {
                 return [
                     'status' => 401, // Unauthorized
-                    'message' => [
-                        'errorDetails' => [__('auth.login_failed')],
-                    ],
+                    'message' => ['فشل في تسجيل الدخول. كلمة المرور غير صحيحة.'],
                 ];
             }
 
-            // If authentication succeeds
-            $user = Auth::user();
+            // If authentication succeeds, return success message
             return [
-                'message' => __('auth.login_success'),
-                'status' => 201, // Created
+                'message' => 'Login successful.', // Success message
+                'status' => 201, // HTTP status code for created
                 'data' => [
-                    'token' => $token, // Return the generated token
-                    'type' => 'bearer', // Token type
+                    'user_id' => $user->id,
+                    'name' => $user->name,
                 ],
             ];
-
         } catch (Exception $e) {
-            // Log the error
-            Log::error('Error in login: ' . $e->getMessage());
+            // Log the error details for debugging
+            Log::error('Error during login: ' . $e->getMessage());
+
             return [
                 'status' => 500, // Internal Server Error
-                'message' => [
-                    'errorDetails' => [__('auth.general_error')],
-                ],
+                'message' => ['حدث خطأ أثناء معالجة الطلب.'],
             ];
         }
     }
 
-    /**
-     * Logout the authenticated user.
-     *
-     * @return array Contains message and status.
-     */
-    public function logout()
+
+    public function resetPassword($data)
     {
         try {
-            // Logout the user
-            Auth::logout();
+            // Fetch the user
+            $user = User::first(); // Assuming there's only one user
+
+            if (!$user) {
+                return [
+                    'status' => 404, // User not found
+                    'message' => ['المستخدم غير موجود.'],
+                ];
+            }
+
+            // Check if the provided old password matches the hashed password
+            if (!Hash::check($data['old_password'], $user->password)) {
+                return [
+                    'status' => 401, // Unauthorized
+                    'message' => ['كلمة المرور القديمة غير صحيحة.'],
+                ];
+            }
+
+            // Update the password to the new one
+            $user->update([
+                'password' => Hash::make($data['new_password']), // Hash the new password
+            ]);
+
             return [
-                'message' => __('auth.logout_success'),
                 'status' => 200, // Success
+                'message' => ['تم تغيير كلمة المرور بنجاح.'],
             ];
         } catch (Exception $e) {
-            // Log the error
-            Log::error('Error in logout: ' . $e->getMessage());
+            // Log any error encountered
+            Log::error('Error resetting password: ' . $e->getMessage());
+
             return [
                 'status' => 500, // Internal Server Error
-                'message' => [
-                    'errorDetails' => [__('auth.general_error')],
-                ],
+                'message' => ['حدث خطأ أثناء معالجة الطلب.'],
             ];
         }
     }
 
-    /**
-     * Refresh the JWT token for the authenticated user.
-     *
-     * @return array Contains message, status, and refreshed token data.
-     */
-    public function refresh()
-    {
-        try {
-            // Refresh the JWT token
-            $newToken = JWT::parseToken()->refresh();
 
-            return [
-                'message' => __('auth.token_refresh_success'),
-                'status' => 200, // Success
-                'data' => [
-                    'user' => auth()->user(),
-                    'token' => $newToken,
-                ],
-            ];
 
-        } catch (Exception $e) {
-            // Log the error
-            Log::error('Error in token refresh: ' . $e->getMessage());
-            return [
-                'status' => 500, // Internal Server Error
-                'message' => [
-                    'errorDetails' => [__('auth.general_error')],
-                ],
-            ];
-        }
-    }
 }

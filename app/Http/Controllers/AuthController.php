@@ -1,18 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers;
 
-use App\Models\User;
-use GuzzleHttp\Psr7\Request;
 use App\Services\AuthService;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
-use App\Http\Requests\StorProfileRequest;
-use App\Http\Requests\AuthRequest\ResendCode;
+
 use App\Http\Requests\AuthRequest\LoginRequest;
-use App\Http\Requests\AuthRequest\RegisterRequest;
-use App\Http\Requests\AuthRequest\GoogelloginRequest;
-use App\Http\Requests\AuthRequest\VerficationRequest;
+use App\Http\Requests\AuthRequest\resetPassword;
 
 class AuthController extends Controller
 {
@@ -32,10 +26,6 @@ class AuthController extends Controller
     {
         $this->authService = $authService;
     }
-
-
-
-
 
     /**
      * Login an existing user.
@@ -57,15 +47,13 @@ class AuthController extends Controller
             : self::error(null, $result['message'], $result['status']);
     }
 
-    /**
-     * Logout the authenticated user.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function logout()
-    {
+
+    public function resetPassword(resetPassword $request)
+    {// Validate the request data
+        $data = $request->validated();
+
         // Call the AuthService to logout the user
-        $result = $this->authService->logout();
+        $result = $this->authService->resetPassword($data);
 
         // Return a success or error response based on the result
         return $result['status'] === 200
@@ -73,21 +61,7 @@ class AuthController extends Controller
             : self::error(null, $result['message'], $result['status']);
     }
 
-    /**
-     * Refresh the JWT token for the authenticated user.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function refresh()
-    {
-        // Call the AuthService to refresh the token
-        $result = $this->authService->refresh();
 
-        // Return a success or error response based on the result
-        return $result['status'] === 200
-            ? self::success($result['data'], $result['message'], $result['status'])
-            : self::error(null, $result['message'], $result['status']);
-    }
 
 
 }
