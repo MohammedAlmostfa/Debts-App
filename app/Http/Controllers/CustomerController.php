@@ -10,97 +10,108 @@ use App\Http\Requests\CustomerRequest\StoreCustomerData;
 use App\Http\Requests\CustomerRequest\UpdateCustomerData;
 
 /**
- * CustomerController handles all customer-related HTTP requests
- * including creation, updating, and deletion of customer records.
+ * CustomerController manages customer-related operations, such as:
+ * - Retrieving a list of customers
+ * - Showing customer details (including debts)
+ * - Creating, updating, and deleting customer records
  */
 class CustomerController extends Controller
 {
     /**
-     * @var CustomerService $customerService Handles business logic for customer operations
+     * @var CustomerService $customerService Handles customer business logic
      */
     protected CustomerService $customerService;
 
     /**
-     * Constructor for dependency injection
+     * CustomerController Constructor
+     * Initializes the CustomerService dependency for handling customer-related logic.
      *
-     * @param CustomerService $customerService Injected customer service instance
+     * @param CustomerService $customerService Dependency injected service for customer operations
      */
     public function __construct(CustomerService $customerService)
     {
         $this->customerService = $customerService;
     }
 
-    public function index()
+    /**
+     * Retrieve and paginate a list of customers.
+     *
+     * @return JsonResponse Returns paginated list of customers or error response
+     */
+    public function index(): JsonResponse
     {
         $result = $this->customerService->getAllCustomers();
+
         return $result['status'] === 200
                 ? $this->paginated($result['data'], customerResource::class, $result['message'], $result['status'])
                 : $this->error($result['data'], $result['message'], $result['status']);
     }
-    public function show($id)
+
+    /**
+     * Show detailed information about a specific customer, including debts.
+     *
+     * @param int $id The ID of the customer to retrieve
+     * @return JsonResponse Returns detailed information about the customer or error response
+     */
+    public function show($id): JsonResponse
     {
         $result = $this->customerService->getCustomerDebts($id);
+
         return $result['status'] === 200
              ? $this->success($result['data'], $result['message'], $result['status'])
              : $this->error($result['data'], $result['message'], $result['status']);
     }
+
     /**
-     * Store a new customer record
+     * Store a new customer record in the database.
      *
      * @param StoreCustomerData $request Validated request data containing:
-     *    - name: string (required)
-     *    - phone: string (required)
-     *    - notes: string (optional)
-     * @return JsonResponse Returns JSON response with:
-     *    - success: boolean
-     *    - message: string
-     *    - data: Customer|null
-     *    - status: integer (HTTP status code)
+     *    - name (string, required): Name of the customer
+     *    - phone (string, required): Phone number of the customer
+     *    - notes (string, optional): Additional notes about the customer
+     * @return JsonResponse Returns JSON response with operation result
      */
     public function store(StoreCustomerData $request): JsonResponse
     {
-        // Process creation through service layer
         $result = $this->customerService->createCustomer($request->validated());
 
-        // Return appropriate response based on status code
         return $result['status'] === 200
             ? $this->success($result['data'], $result['message'], $result['status'])
             : $this->error($result['data'], $result['message'], $result['status']);
     }
 
     /**
-     * Update an existing customer record
+     * Update an existing customer record.
      *
-     * @param UpdateCustomerData $request Validated request data containing update fields
-     * @param Customer $customer Customer model to be updated
+     * @param UpdateCustomerData $request Validated request data containing fields to update:
+     *    - name (string, optional): Updated name of the customer
+     *    - phone (string, optional): Updated phone number of the customer
+     *    - notes (string, optional): Updated notes for the customer
+     * @param Customer $customer The customer model instance to be updated
      * @return JsonResponse Returns JSON response with operation result
      */
     public function update(UpdateCustomerData $request, Customer $customer): JsonResponse
     {
-        // Process update through service layer
         $result = $this->customerService->updateCustomer(
             $request->validated(),
             $customer
         );
 
-        // Return appropriate response based on status code
         return $result['status'] === 200
             ? $this->success($result['data'], $result['message'], $result['status'])
             : $this->error($result['data'], $result['message'], $result['status']);
     }
 
     /**
-     * Delete a customer record
+     * Delete a customer record from the database.
      *
-     * @param Customer $customer Customer model to be deleted
+     * @param Customer $customer The customer model instance to be deleted
      * @return JsonResponse Returns JSON response with operation result
      */
     public function destroy(Customer $customer): JsonResponse
     {
-        // Process deletion through service layer
         $result = $this->customerService->deleteCustomer($customer);
 
-        // Return appropriate response based on status code
         return $result['status'] === 200
             ? $this->success($result['data'], $result['message'], $result['status'])
             : $this->error($result['data'], $result['message'], $result['status']);
