@@ -13,7 +13,6 @@ return new class extends Migration {
         Schema::create('receipt_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('receipt_id')->constrained()->onDelete('cascade');
-
             $table->text('description');
             $table->integer('quantity');
             $table->decimal('unit_price', 10, 2);

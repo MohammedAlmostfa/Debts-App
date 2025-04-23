@@ -16,7 +16,7 @@ class CustomerService
     {
         try {
             // Fetch all customers with pagination (10 customers per page)
-            $customers = Customer::paginate(10);
+            $customers = Customer::all();
 
             // Return successful response
             return $this->successResponse($customers, 'Customers retrieved successfully', 200);
@@ -56,7 +56,7 @@ class CustomerService
     {
         try {
             $customer = Customer::create($data);
-            return $this->successResponse($customer, 'Customer created', 201);
+            return $this->successResponse($customer, 'Customer created', 200);
         } catch (Exception $e) {
             Log::error('Create customer error: '.$e->getMessage());
             return $this->errorResponse('Failed to create customer');

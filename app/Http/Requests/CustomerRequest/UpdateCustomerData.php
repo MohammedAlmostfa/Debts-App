@@ -24,7 +24,8 @@ class UpdateCustomerData extends FormRequest
         return [
             'name' => 'nullable|string|max:255',
             'phone' => 'nullable|string|unique:customers,phone|max:20',
-            'notes' => 'nullable|string|max:1000'
+            'notes' => 'nullable|string|max:1000',
+            'record_id'=>'nullable|integer',
         ];
 
     }

@@ -42,9 +42,10 @@ class CustomerController extends Controller
     {
         $result = $this->customerService->getAllCustomers();
 
+
         return $result['status'] === 200
-                ? $this->paginated($result['data'], customerResource::class, $result['message'], $result['status'])
-                : $this->error($result['data'], $result['message'], $result['status']);
+             ? $this->success($result['data'], $result['message'], $result['status'])
+             : $this->error($result['data'], $result['message'], $result['status']);
     }
 
     /**

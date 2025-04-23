@@ -24,7 +24,8 @@ class StoreCustomerData extends FormRequest
         return [
             'name' => 'required|string|max:255',
             'phone' => 'required|string|unique:customers,phone|max:20',
-            'notes' => 'nullable|string|max:1000'
+            'notes' => 'nullable|string|max:1000',
+            'record_id'=>'nullable|integer',
         ];
 
     }

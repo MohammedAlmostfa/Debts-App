@@ -38,6 +38,7 @@ class DebtService
                 'debit' => $data['credit'] ,
                 'debt_date' => $data['debt_date'] ?? now(),
                 'total_balance' => $newBalance,
+                "details"=>$data["details"],
             ]);
 
             return $this->successResponse($debt, ' تم تسجيل الدين بنجاح ');
