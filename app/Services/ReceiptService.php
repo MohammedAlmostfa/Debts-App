@@ -12,47 +12,44 @@ use Illuminate\Support\Facades\Log;
  */
 class ReceiptService
 {
+    /**
+     * Retrieve all receipts with pagination.
+     *
+     * @return array Response indicating success or failure
+     */
     public function getAllReceipts()
     {
         try {
             // Fetch receipts with pagination (10 receipts per page)
             $receipts = Receipt::all();
 
-            // Return successful response
-            return [
-                'status' => 200,
-                'message' => 'Receipts retrieved successfully',
-                'data' => $receipts,
-            ];
+            return $this->successResponse($receipts, 'تم استرجاع الإيصالات بنجاح.');
         } catch (Exception $e) {
-            // Log the error for debugging purposes
-            Log::error('Error fetching receipts: ' . $e->getMessage());
+            Log::error('خطأ أثناء استرجاع الإيصالات: ' . $e->getMessage());
 
-            // Return error response
-            return [
-                'status' => 500,
-                'message' => 'Failed to retrieve receipts',
-            ];
+            return $this->errorResponse('فشل في استرجاع الإيصالات.');
         }
     }
 
+    /**
+     * Retrieve all receipt items for a specific receipt.
+     *
+     * @param Receipt $receipt The receipt to retrieve items for
+     * @return array Response indicating success or failure
+     */
+    public function getReceiptItems(Receipt $receipt)
+    {
+        try {
+            // Fetch items associated with the receipt
+            $receiptItems = $receipt->receiptItems;
 
+            return $this->successResponse($receiptItems, 'تم استرجاع عناصر الإيصال بنجاح.');
+        } catch (Exception $e) {
+            Log::error('خطأ أثناء استرجاع عناصر الإيصال: ' . $e->getMessage());
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            return $this->errorResponse('فشل في استرجاع عناصر الإيصال.');
+        }
+    }
 
     /**
      * Create a new receipt along with its items.
@@ -80,19 +77,35 @@ class ReceiptService
                 ]);
             }
 
-            return [
-                'status' => 200,
-                'message' => 'Receipt created successfully',
-                'data' => $receipt,
-            ];
+            return $this->successResponse($receipt, 'تم إنشاء الإيصال بنجاح.');
         } catch (Exception $e) {
-            // Log the error for debugging purposes
-            Log::error('Error creating receipt: ' . $e->getMessage());
+            Log::error('خطأ أثناء إنشاء الإيصال: ' . $e->getMessage());
 
-            return [
-                'status' => 500,
-                'message' => 'Failed to create receipt',
-            ];
+            return $this->errorResponse('فشل في إنشاء الإيصال.');
         }
+    }
+
+    /**
+     * Success response structure.
+     */
+    private function successResponse($data, string $message, int $status = 200): array
+    {
+        return [
+            'status' => $status,
+            'message' => $message,
+            'data' => $data,
+        ];
+    }
+
+    /**
+     * Error response structure.
+     */
+    private function errorResponse(string $message, int $status = 500): array
+    {
+        return [
+            'status' => $status,
+            'message' => $message,
+            'data' => null,
+        ];
     }
 }

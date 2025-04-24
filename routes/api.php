@@ -17,3 +17,4 @@ Route::get('/user', function (Request $request) {
 Route::apiResource('customer', CustomerController::class);
 Route::apiResource('debt', DebtController::class);
 Route::apiResource('receipt', ReceiptController::class);
+Route::get('receipt/{receipt}/receiptItem', [ReceiptController::class,'getReceiptItems']);

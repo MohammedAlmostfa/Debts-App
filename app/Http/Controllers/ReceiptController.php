@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ReceiptRequest\StoreReceiptData;
+use App\Models\Receipt;
 use App\Services\ReceiptService;
 use Illuminate\Http\JsonResponse;
 
@@ -29,6 +30,14 @@ class ReceiptController extends Controller
     public function index(): JsonResponse
     {
         $result = $this->ReceiptService->getAllReceipts();
+        return $result['status'] === 200
+                   ? $this->success($result['data'], $result['message'], $result['status'])
+                   : $this->error(null, $result['message'], $result['status']);
+
+    }
+    public function getReceiptItems(Receipt $receipt): JsonResponse
+    {
+        $result = $this->ReceiptService->getReceiptItems($receipt);
         return $result['status'] === 200
                    ? $this->success($result['data'], $result['message'], $result['status'])
                    : $this->error(null, $result['message'], $result['status']);

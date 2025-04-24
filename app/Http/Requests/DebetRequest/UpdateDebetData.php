@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\CustomerRequest;
+namespace App\Http\Requests\DebetRequest;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateCustomerData extends FormRequest
+class UpdateDebetData extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,10 @@ class UpdateCustomerData extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'nullable|string|max:255',
-            'phone' => 'nullable|string',
-            'notes' => 'nullable|string|max:1000',
-            'record_id'=>'nullable|integer',
+            'credit' => 'nullable|numeric|min:0',
+            'debit'  => 'nullable|numeric|min:0',
+            'debt_date' => 'nullable|date',
+            'details' => 'nullable|string'
         ];
-
     }
 }
