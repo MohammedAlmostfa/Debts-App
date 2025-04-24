@@ -2,59 +2,107 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ReceiptRequest\StoreReceiptData;
 use App\Models\Receipt;
 use App\Services\ReceiptService;
 use Illuminate\Http\JsonResponse;
+use App\Http\Requests\ReceiptRequest\StoreReceiptData;
+use App\Http\Requests\ReceiptRequest\UpdateReceiptData;
+use App\Http\Requests\ReceiptRequest\fitrtingReceiptData;
 
 /**
- * ReceiptController handles receipt-related HTTP requests
- * including creation and management of receipts.
+ * Class ReceiptController
+ * Handles receipt-related HTTP requests
+ * including creating, retrieving, updating, and deleting receipts.
  */
 class ReceiptController extends Controller
 {
     /**
-     * @var ReceiptService $ReceiptService Handles business logic for receipt operations
+     * @var ReceiptService $ReceiptService Handles business logic for receipt operations.
      */
     protected ReceiptService $ReceiptService;
 
     /**
-     * Constructor for dependency injection
+     * ReceiptController constructor
      *
-     * @param ReceiptService $ReceiptService Injected receipt service instance
+     * Injects the ReceiptService to handle receipt-related operations.
+     *
+     * @param ReceiptService $ReceiptService The service layer for receipt management.
      */
     public function __construct(ReceiptService $ReceiptService)
     {
         $this->ReceiptService = $ReceiptService;
     }
-    public function index(): JsonResponse
-    {
-        $result = $this->ReceiptService->getAllReceipts();
-        return $result['status'] === 200
-                   ? $this->successshow($result['data'], $result['message'], $result['status'])
-                   : $this->error(null, $result['message'], $result['status']);
 
+    /**
+     * Retrieve all receipts with optional pagination.
+     *
+     * @return JsonResponse Returns JSON response containing receipts or error message.
+     */
+    public function index(fitrtingReceiptData $request): JsonResponse
+    {
+        $result = $this->ReceiptService->getAllReceipts($request->validated());
+
+        return $result['status'] === 200
+            ? $this->successshow($result['data'], $result['message'], $result['status'])
+            : $this->error(null, $result['message'], $result['status']);
     }
+
+    /**
+     * Retrieve all items associated with a specific receipt.
+     *
+     * @param Receipt $receipt The receipt instance for which items are retrieved.
+     * @return JsonResponse Returns JSON response containing receipt items or error message.
+     */
     public function getReceiptItems(Receipt $receipt): JsonResponse
     {
         $result = $this->ReceiptService->getReceiptItems($receipt);
-        return $result['status'] === 200
-                   ? $this->successshow($result['data'], $result['message'], $result['status'])
-                   : $this->error(null, $result['message'], $result['status']);
 
+        return $result['status'] === 200
+            ? $this->successshow($result['data'], $result['message'], $result['status'])
+            : $this->error(null, $result['message'], $result['status']);
     }
+
     /**
-     * Store a new receipt record.
+     * Create a new receipt along with its items.
      *
-     * @param StoreReceiptData $request Validated receipt request data
-     * @return JsonResponse Returns JSON response indicating success or failure
+     * @param StoreReceiptData $request Validated request data for the new receipt.
+     * @return JsonResponse Returns JSON response indicating success or failure.
      */
     public function store(StoreReceiptData $request): JsonResponse
     {
-        // Process creation through service layer
         $result = $this->ReceiptService->createReceipt($request->validated());
 
-        // Return appropriate response based on status code
+        return $result['status'] === 200
+            ? $this->success($result['data'], $result['message'], $result['status'])
+            : $this->error(null, $result['message'], $result['status']);
+    }
+
+    /**
+     * Update an existing receipt and its items.
+     *
+     * @param UpdateReceiptData $request Validated update data for the receipt.
+     * @param Receipt $receipt The receipt instance to be updated.
+     * @return JsonResponse Returns JSON response indicating success or failure.
+     */
+    public function update(UpdateReceiptData $request, Receipt $receipt): JsonResponse
+    {
+        $result = $this->ReceiptService->updateReceipt($request->validated(), $receipt);
+
+        return $result['status'] === 200
+            ? $this->success($result['data'], $result['message'], $result['status'])
+            : $this->error(null, $result['message'], $result['status']);
+    }
+
+    /**
+     * Delete a receipt and optionally its associated items.
+     *
+     * @param Receipt $receipt The receipt instance to be deleted.
+     * @return JsonResponse Returns JSON response indicating success or failure.
+     */
+    public function destroy(Receipt $receipt): JsonResponse
+    {
+        $result = $this->ReceiptService->deletReceipt($receipt);
+
         return $result['status'] === 200
             ? $this->success($result['data'], $result['message'], $result['status'])
             : $this->error(null, $result['message'], $result['status']);

@@ -19,22 +19,27 @@ class CustomerService
      *
      * @return array Response containing status, message, and list of customers.
      */
-    public function getAllCustomers()
+    public function getAllCustomers($filteringData)
     {
         try {
-            // Fetch all customers
-            $customers = Customer::all();
 
-            // Return success response with customer list
+            $customers = Customer::query()
+                ->when(!empty($filteringData), function ($query) use ($filteringData) {
+                    $query->filterBy($filteringData);
+                })
+                ->get();
+
+
             return $this->successResponse($customers, 'تم استرجاع العملاء بنجاح', 200);
         } catch (Exception $e) {
-            // Log error details for debugging
+
             Log::error('خطأ أثناء استرجاع العملاء: ' . $e->getMessage());
 
-            // Return error response
+
             return $this->errorResponse('فشل في استرجاع العملاء');
         }
     }
+
 
     /**
      * Retrieve customer debts.

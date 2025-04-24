@@ -9,7 +9,8 @@ class ReceiptItem extends Model
         'receipt_id',
         'description',
         'quantity',
-        'unit_price'
+        'unit_price',
+
     ];
     protected $casts = [
        'receipt_id' => 'integer',
@@ -35,4 +36,7 @@ class ReceiptItem extends Model
     {
         return $this->quantity * $this->unit_price;
     }
+
+
+
 }

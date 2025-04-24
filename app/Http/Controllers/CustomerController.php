@@ -6,6 +6,7 @@ use App\Models\Customer;
 use App\Services\CustomerService;
 use Illuminate\Http\JsonResponse;
 use App\Http\Resources\customerResource;
+use App\Http\Requests\CustomerRequest\fitrtingData;
 use App\Http\Requests\CustomerRequest\StoreCustomerData;
 use App\Http\Requests\CustomerRequest\UpdateCustomerData;
 
@@ -38,11 +39,9 @@ class CustomerController extends Controller
      *
      * @return JsonResponse Returns paginated list of customers or error response
      */
-    public function index(): JsonResponse
+    public function index(fitrtingData $request): JsonResponse
     {
-        $result = $this->customerService->getAllCustomers();
-
-
+        $result = $this->customerService->getAllCustomers($request->validated());
         return $result['status'] === 200
              ? $this->successshow($result['data'], $result['message'], $result['status'])
              : $this->error($result['data'], $result['message'], $result['status']);

@@ -14,7 +14,8 @@ return new class extends Migration {
         Schema::create('receipts', function (Blueprint $table) {
             $table->id();
             $table->string('customer_name');
-            $table->string('total_price', 10, 2);
+            $table->string('phone');
+            $table->decimal('total_price', 10, 2);
             $table->string('receipt_number')->unique();
             $table->date('receipt_date');
             $table->timestamps();

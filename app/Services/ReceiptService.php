@@ -17,11 +17,14 @@ class ReceiptService
      *
      * @return array Response indicating success or failure
      */
-    public function getAllReceipts()
+    public function getAllReceipts($filteringData)
     {
         try {
             // Fetch receipts with pagination (10 receipts per page)
-            $receipts = Receipt::all();
+            $receipts = Receipt::query()
+                          ->when(!empty($filteringData), function ($query) use ($filteringData) {
+                              $query->filterBy($filteringData);
+                          })->get();
 
             return $this->successResponse($receipts, 'تم استرجاع الإيصالات بنجاح.');
         } catch (Exception $e) {
@@ -63,9 +66,10 @@ class ReceiptService
             // Create the receipt
             $receipt = Receipt::create([
                 'customer_name' => $data['customer_name'],
+                'phone' => $data['phone'] ,
                 'total_price' => $data['total_price'],
                 'receipt_number' => $data['receipt_number'],
-                'receipt_date' => $data['receipt_date'],
+                'receipt_date' => $data['receipt_date'] ?? now(),
             ]);
 
             // Create associated receipt items
@@ -84,6 +88,54 @@ class ReceiptService
             return $this->errorResponse('فشل في إنشاء الإيصال.');
         }
     }
+    public function updateReceipt($data, Receipt $receipt)
+    {
+        try {
+            // Update receipt fields selectively
+            $receipt->update([
+                'customer_name' => $data['customer_name'] ?? $receipt->customer_name,
+                'phone' => $data['phone'] ?? $receipt->phone,
+                'total_price' => $data['total_price'] ?? $receipt->total_price,
+                'receipt_number' => $data['receipt_number'] ?? $receipt->receipt_number,
+                'receipt_date' => $data['receipt_date'] ?? $receipt->receipt_date,
+            ]);
+
+            // Update associated receipt items (optional handling for items)
+            if (isset($data['items']) && is_array($data['items'])) {
+                foreach ($data['items'] as $item) {
+                    $receipt->receiptItems()->updateOrCreate(
+                        ['id' => $item['id'] ?? null],
+                        [
+                            'description' => $item['description'],
+                            'quantity' => $item['quantity'],
+                            'unit_price' => $item['unit_price'],
+                        ]
+                    );
+                }
+            }
+
+            return $this->successResponse($receipt, 'تم تحديث الإيصال بنجاح.');
+        } catch (Exception $e) {
+            Log::error('خطأ أثناء تحديث الإيصال: ' . $e->getMessage());
+
+            return $this->errorResponse('فشل في تحديث الإيصال.');
+        }
+    }
+    public function deletReceipt(Receipt $receipt)
+    {
+        try {
+            // Update receipt fields selectively
+            $receipt->delete();
+            // Update associated receipt items (optional handling for items)
+
+            return $this->successResponse($receipt, 'تم حذف الإيصال بنجاح.');
+        } catch (Exception $e) {
+            Log::error('خطأ أثناء حذف الإيصال: ' . $e->getMessage());
+
+            return $this->errorResponse('فشل في حذف الإيصال.');
+        }
+    }
+
 
     /**
      * Success response structure.

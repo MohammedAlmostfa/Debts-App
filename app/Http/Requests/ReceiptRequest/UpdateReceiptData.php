@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Http\Requests\CustomerRequest;
+namespace App\Http\Requests\ReceiptRequest;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 
-class StoreCustomerData extends FormRequest
+class UpdateReceiptData extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return true; // Adjust authorization logic if needed
     }
 
     /**
@@ -24,13 +24,23 @@ class StoreCustomerData extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'phone' => 'required|unique:customers,phone|max:20',
-            'notes' => 'nullable|string|max:1000',
-            'record_id'=>'nullable|integer',
+            'customer_name' => 'nullable|string|max:255',
+            'total_price' => 'nullable|numeric|min:0',
+            'phone' => 'nullable|max:20',
+            'receipt_date' => 'nullable|date|before_or_equal:now',
+            'items' => 'nullable|array',
+            'items.*.id' => 'required|integer',
+            'items.*.description' => 'nullable|string|max:255',
+            'items.*.quantity' => 'nullable|integer|min:1',
+            'items.*.unit_price' => 'nullable|numeric|min:0',
         ];
-
     }
+
+    /**
+     * Handle failed validation and return a JSON response.
+     *
+     * @param Validator $validator
+     */
     protected function failedValidation(Validator $validator): void
     {
         throw new HttpResponseException(response()->json([
