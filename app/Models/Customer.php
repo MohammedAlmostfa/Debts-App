@@ -9,10 +9,11 @@ class Customer extends Model
     protected $fillable = ['name', 'phone', 'notes','record_id'];
 
     protected $casts = [
+
        'name' => 'string',
-       'phone' => 'string',
+'phone' => 'integer',
        'notes' => 'string',
-       'record_id' => 'string',
+       'record_id' => 'integer',
 
       ];
     public function debts()

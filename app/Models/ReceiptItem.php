@@ -12,10 +12,10 @@ class ReceiptItem extends Model
         'unit_price'
     ];
     protected $casts = [
-       'receipt_id' => 'string',
+       'receipt_id' => 'integer',
        'description' => 'string',
-       'quantity' => 'string',
-       'unit_price' => 'string',
+       'quantity' => 'integer',
+       'unit_price' => 'integer',
 
       ];
 

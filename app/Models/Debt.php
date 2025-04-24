@@ -11,11 +11,11 @@ class Debt extends Model
 
 
     protected $casts = [
-        'customer_id' => 'string',
-        'credit' => 'string',
-        'debit' => 'string',
+        'customer_id' => 'integer',
+        'credit' => 'integer',
+        'debit' => 'integer',
         'debt_date' => 'date',
-        'total_balance' => 'string',
+        'total_balance' => 'integer',
         'details' => 'string',
     ];
     public function customer()
