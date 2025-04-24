@@ -31,7 +31,7 @@ class ReceiptController extends Controller
     {
         $result = $this->ReceiptService->getAllReceipts();
         return $result['status'] === 200
-                   ? $this->success($result['data'], $result['message'], $result['status'])
+                   ? $this->successshow($result['data'], $result['message'], $result['status'])
                    : $this->error(null, $result['message'], $result['status']);
 
     }
@@ -39,7 +39,7 @@ class ReceiptController extends Controller
     {
         $result = $this->ReceiptService->getReceiptItems($receipt);
         return $result['status'] === 200
-                   ? $this->success($result['data'], $result['message'], $result['status'])
+                   ? $this->successshow($result['data'], $result['message'], $result['status'])
                    : $this->error(null, $result['message'], $result['status']);
 
     }

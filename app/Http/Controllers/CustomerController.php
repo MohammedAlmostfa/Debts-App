@@ -44,7 +44,7 @@ class CustomerController extends Controller
 
 
         return $result['status'] === 200
-             ? $this->success($result['data'], $result['message'], $result['status'])
+             ? $this->successshow($result['data'], $result['message'], $result['status'])
              : $this->error($result['data'], $result['message'], $result['status']);
     }
 
@@ -59,7 +59,7 @@ class CustomerController extends Controller
         $result = $this->customerService->getCustomerDebts($id);
 
         return $result['status'] === 200
-             ? $this->success($result['data'], $result['message'], $result['status'])
+             ? $this->successshow($result['data'], $result['message'], $result['status'])
              : $this->error($result['data'], $result['message'], $result['status']);
     }
 

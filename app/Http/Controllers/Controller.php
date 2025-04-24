@@ -11,6 +11,14 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, ValidatesRequests;
 
+    public static function successshow($data = null, $message = '', $status = 200)
+    {
+        return response()->json([
+            'status' => 'success',
+            'message' => $message ,
+            'data' => $data,
+        ], $status);
+    }
     /**
      * Return a successful JSON response.
      *
@@ -77,5 +85,6 @@ class Controller extends BaseController
             ],
         ], $status);
     }
+
 
 }
