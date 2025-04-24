@@ -19,30 +19,31 @@ class Controller extends BaseController
      * @param int $status The HTTP status code.
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function success($data = null, $message = '', $status = 200)
+    public static function success($data = [], $message = '', $status = 200)
     {
+        // Ensure the data is structured as a list (array)
         return response()->json([
             'status' => 'success',
-            'message' => $message ,
-            'data' => $data,
+            'message' => $message,
+            'data' => is_array($data) ? array_values($data) : [$data], // Ensure it's always a list
         ], $status);
     }
 
-
     /**
-  * Return an error JSON response.
+     * Return an error JSON response.
      *
      * @param mixed $data The data to be returned in the response.
      * @param string $message The error message.
      * @param int $status The HTTP status code.
      * @return \Illuminate\Http\JsonResponse
      */
-    public static function error($data = null, $message = '', $status = 400)
+    public static function error($data = [], $message = '', $status = 400)
     {
+        // Ensure the data is structured as a list (array)
         return response()->json([
             'status' => 'error',
-            'errors' => $message  ,
-            'data' => $data,
+            'errors' => $message,
+            'data' => is_array($data) ? array_values($data) : [$data], // Ensure it's always a list
         ], $status);
     }
 

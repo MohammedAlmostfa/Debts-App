@@ -3,6 +3,8 @@
 namespace App\Http\Requests\DebetRequest;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 
 class StorDebetData extends FormRequest
 {
@@ -32,5 +34,13 @@ class StorDebetData extends FormRequest
             'debt_date' => 'nullable|date',
             'details' => 'nullable|string'
         ];
+    }
+    protected function failedValidation(Validator $validator): void
+    {
+        throw new HttpResponseException(response()->json([
+            'status' => 'error',
+            'message' => 'فشل التحقق من صحة البيانات',
+            'errors' => $validator->errors(),
+        ], 422));
     }
 }

@@ -26,13 +26,13 @@ class CustomerService
             $customers = Customer::all();
 
             // Return success response with customer list
-            return $this->successResponse($customers, 'Customers retrieved successfully', 200);
+            return $this->successResponse($customers, 'تم استرجاع العملاء بنجاح', 200);
         } catch (Exception $e) {
             // Log error details for debugging
-            Log::error('Get customers error: ' . $e->getMessage());
+            Log::error('خطأ أثناء استرجاع العملاء: ' . $e->getMessage());
 
             // Return error response
-            return $this->errorResponse('Failed to retrieve customers');
+            return $this->errorResponse('فشل في استرجاع العملاء');
         }
     }
 
@@ -51,13 +51,13 @@ class CustomerService
             $customer = Customer::with('debts')->findOrFail($id);
 
             // Return success response with debts
-            return $this->successResponse($customer->debts, 'Customer debts retrieved successfully', 200);
+            return $this->successResponse($customer->debts, 'تم استرجاع ديون العميل بنجاح', 200);
         } catch (Exception $e) {
             // Log error details for debugging
-            Log::error('Error fetching customer debts: ' . $e->getMessage());
+            Log::error('خطأ أثناء استرجاع ديون العميل: ' . $e->getMessage());
 
             // Return error response
-            return $this->errorResponse('Failed to retrieve customer debts');
+            return $this->errorResponse('فشل في استرجاع ديون العميل');
         }
     }
 
@@ -74,13 +74,13 @@ class CustomerService
             $customer = Customer::create($data);
 
             // Return success response
-            return $this->successResponse($customer, 'Customer created successfully', 200);
+            return $this->successResponse($customer, 'تم إنشاء العميل بنجاح', 200);
         } catch (Exception $e) {
             // Log error details for debugging
-            Log::error('Create customer error: ' . $e->getMessage());
+            Log::error('خطأ أثناء إنشاء العميل: ' . $e->getMessage());
 
             // Return error response
-            return $this->errorResponse('Failed to create customer');
+            return $this->errorResponse('فشل في إنشاء العميل');
         }
     }
 
@@ -100,13 +100,13 @@ class CustomerService
             $customer->update($data);
 
             // Return success response
-            return $this->successResponse($customer, 'Customer updated successfully');
+            return $this->successResponse($customer, 'تم تحديث العميل بنجاح');
         } catch (Exception $e) {
             // Log error details for debugging
-            Log::error('Update customer error: ' . $e->getMessage());
+            Log::error('خطأ أثناء تحديث العميل: ' . $e->getMessage());
 
             // Return error response
-            return $this->errorResponse('Failed to update customer');
+            return $this->errorResponse('فشل في تحديث العميل');
         }
     }
 
@@ -125,13 +125,13 @@ class CustomerService
             $customer->delete();
 
             // Return success response
-            return $this->successResponse(null, 'Customer deleted successfully');
+            return $this->successResponse(null, 'تم حذف العميل بنجاح');
         } catch (Exception $e) {
             // Log error details for debugging
-            Log::error('Delete customer error: ' . $e->getMessage());
+            Log::error('خطأ أثناء حذف العميل: ' . $e->getMessage());
 
             // Return error response
-            return $this->errorResponse('Failed to delete customer');
+            return $this->errorResponse('فشل في حذف العميل');
         }
     }
 
