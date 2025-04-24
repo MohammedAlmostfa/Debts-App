@@ -11,6 +11,13 @@ class ReceiptItem extends Model
         'quantity',
         'unit_price'
     ];
+    protected $casts = [
+       'receipt_id' => 'string',
+       'description' => 'string',
+       'quantity' => 'string',
+       'unit_price' => 'string',
+
+      ];
 
     // Relationship: Each item belongs to a receipt
     public function receipt()

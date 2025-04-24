@@ -31,7 +31,7 @@ class StoreReceiptData extends FormRequest
     {
         return [
             'customer_name' => 'required|string|max:255',
-            'total_amount' => 'required|numeric|min:0',
+            'total_price' => 'required|numeric|min:0',
             'receipt_number' => 'required|string|unique:receipts,receipt_number|max:50',
             'receipt_date' => 'required|date',
             'items' => 'required|array',

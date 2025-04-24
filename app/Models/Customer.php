@@ -8,6 +8,13 @@ class Customer extends Model
 {
     protected $fillable = ['name', 'phone', 'notes','record_id'];
 
+    protected $casts = [
+       'name' => 'string',
+       'phone' => 'string',
+       'notes' => 'string',
+       'record_id' => 'string',
+
+      ];
     public function debts()
     {
         return $this->hasMany(Debt::class);

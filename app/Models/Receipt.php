@@ -9,8 +9,14 @@ class Receipt extends Model
 {
 
 
-    protected $fillable = ['customer_name','total_amount','receipt_number','receipt_date'];
+    protected $fillable = ['customer_name','total_price','receipt_number','receipt_date'];
+    protected $casts = [
+          'customer_name' => 'string',
+          'total_price' => 'string',
+          'receipt_number' => 'string',
+          'receipt_date' => 'date',
 
+      ];
 
     public function receiptitems()
     {

@@ -18,6 +18,8 @@ class StorDebetData extends FormRequest
         return true; // تسمح للجميع بتنفيذ الطلب
     }
 
+
+
     /**
      * Get the validation rules that apply to the request.
      *
@@ -31,7 +33,7 @@ class StorDebetData extends FormRequest
             'customer_id' => 'required|integer|exists:customers,id',
             'credit' => 'nullable|numeric|min:0|required_without:debit',
             'debit'  => 'nullable|numeric|min:0|required_without:credit',
-            'debt_date' => 'nullable|date',
+      'debt_date' => 'nullable|date|before:now',
             'details' => 'nullable|string'
         ];
     }

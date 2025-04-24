@@ -13,10 +13,10 @@ return new class extends Migration {
         Schema::create('debts', function (Blueprint $table) {
             $table->id();
             $table->foreignId('customer_id')->constrained()->onDelete('cascade');
-            $table->decimal('credit', 10, 2)->nullable();
-            $table->decimal('debit', 10, 2)->nullable();
+            $table->string('credit', 10, 2)->nullable();
+            $table->string('debit', 10, 2)->nullable();
             $table->date('debt_date');
-            $table->decimal('total_balance', 10, 2);
+            $table->string('total_balance', 10, 2);
             $table->string('details')->nullable();
             $table->timestamps();
         });

@@ -9,7 +9,7 @@ use App\Http\Controllers\ReceiptController;
 
 Route::post('/login', [AuthController::class, 'login']); // Handles user login
 
-Route::post('logout', [AuthController::class, 'resetPassword']);
+Route::post('resetPassword', [AuthController::class, 'resetPassword']);
 
 Route::get('/user', function (Request $request) {
     return $request->user();

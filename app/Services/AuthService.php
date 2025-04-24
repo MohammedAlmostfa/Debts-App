@@ -87,9 +87,8 @@ class AuthService
             }
 
             // Update the password to the new one
-            $user->update([
-                'password' => Hash::make($data['new_password']), // Hash the new password
-            ]);
+            $user->password=bcrypt($data['new_password']); // Hash the new password
+            $user->save();
 
             // Return success response
             return [

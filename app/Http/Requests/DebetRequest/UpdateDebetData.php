@@ -26,7 +26,7 @@ class UpdateDebetData extends FormRequest
         return [
             'credit' => 'nullable|numeric|min:0',
             'debit'  => 'nullable|numeric|min:0',
-            'debt_date' => 'nullable|date',
+        'debt_date' => 'nullable|date|before:now',
             'details' => 'nullable|string'
         ];
     }

@@ -63,7 +63,7 @@ class ReceiptService
             // Create the receipt
             $receipt = Receipt::create([
                 'customer_name' => $data['customer_name'],
-                'total_amount' => $data['total_amount'],
+                'total_price' => $data['total_price'],
                 'receipt_number' => $data['receipt_number'],
                 'receipt_date' => $data['receipt_date'],
             ]);
