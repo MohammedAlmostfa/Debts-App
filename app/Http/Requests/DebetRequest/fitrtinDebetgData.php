@@ -25,6 +25,7 @@ class fitrtinDebetgData extends FormRequest
              'credit' => 'nullable',
             'debit'  => 'nullable',
             'debt_date' => 'nullable|date|before_or_equal:now',
+                    'receipt_id' => 'nullable|numeric'
         ];
     }
 }

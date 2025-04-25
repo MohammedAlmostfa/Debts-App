@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Debt extends Model
 {
 
-    protected $fillable = ['customer_id', 'credit', 'debit', 'debt_date', 'total_balance', 'details'];
+    protected $fillable = ['customer_id', 'credit', 'debit', 'debt_date', 'total_balance', 'receipt_id'];
 
 
     protected $casts = [
@@ -16,7 +16,7 @@ class Debt extends Model
         'debit' => 'integer',
         'debt_date' => 'date',
         'total_balance' => 'integer',
-        'details' => 'string',
+        'receipt_id' => 'integer',
     ];
     public function customer()
     {
@@ -40,6 +40,10 @@ class Debt extends Model
         if (isset($filteringData['debt_date'])) {
             $query->whereDate('debt_date', '=', $filteringData['debt_date']);
         }
+        if (isset($filteringData['receipt_id'])) {
+            $query->whereDate('receipt_id', '=', $filteringData['receipt_id']);
+        }
+
 
         return $query;
     }

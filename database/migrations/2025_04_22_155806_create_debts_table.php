@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->decimal('debit', 10, 2)->default(0);
             $table->date('debt_date');
             $table->decimal('total_balance', 10, 2);
-            $table->string('details')->nullable();
+            $table->decimal('receipt_id')->nullable();
             $table->timestamps();
         });
     }

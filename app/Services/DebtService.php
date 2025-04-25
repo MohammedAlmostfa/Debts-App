@@ -52,7 +52,7 @@ class DebtService
                 'debit' => $data['debit'] ?? 0,
                 'debt_date' => $data['debt_date'] ?? now(),
                 'total_balance' => $newBalance,
-                'details' => $data['details'] ?? null,
+                'receipt_id' => $data['receipt_id'] ?? null,
             ]);
 
             return $this->successResponse($debt, 'تم تسجيل الدين بنجاح.');
@@ -89,11 +89,11 @@ class DebtService
 
                 // Update the record
                 $debt->update([
-                    'credit' => null,
+                    'credit' => 0,
                     'debit' => $data['debit'],
                     'total_balance' => $newBalance,
                     'debt_date' => $data['debt_date'] ?? $debt->debt_date,
-                    'details' => $data['details'] ?? $debt->details,
+                    'receipt_id' => $data['receipt_id'] ?? $debt->receipt_id,
                 ]);
 
                 // Trigger event to update subsequent balances
@@ -123,7 +123,7 @@ class DebtService
                 'debit' => $data['debit'] ??  0,
                 'debt_date' => $data['debt_date'] ?? $debt->debt_date,
                 'total_balance' => $newBalance,
-                'details' => $data['details'] ?? $debt->details,
+                'receipt_id' => $data['receipt_id'] ?? $debt->receipt_id,
             ]);
 
             // Trigger balance updates if needed
