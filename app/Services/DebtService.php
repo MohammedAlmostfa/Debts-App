@@ -39,7 +39,9 @@ class DebtService
                 $newBalance = $currentBalance + $data['credit'];
             } elseif (!empty($data['debit'])) {
                 // Prevent over-withdrawal
-
+                if ($data['debit'] > $currentBalance) {
+                    return $this->errorResponse('المبلغ المطلوب أكبر من الرصيد المتوفر.');
+                }
                 $newBalance = $currentBalance - $data['debit'];
             } else {
                 return $this->errorResponse('يجب تقديم قيمة صحيحة لـ credit أو debit.');
@@ -48,11 +50,11 @@ class DebtService
             // Create the new debt record
             $debt = Debt::create([
                 'customer_id' => $data['customer_id'],
-                'credit' => $data['credit'] ?? 0,
-                'debit' => $data['debit'] ?? 0,
+                'credit' => $data['credit'] ?? null,
+                'debit' => $data['debit'] ?? null,
                 'debt_date' => $data['debt_date'] ?? now(),
                 'total_balance' => $newBalance,
-                'receipt_id' => $data['receipt_id'] ?? null,
+                'details' => $data['details'] ?? null,
             ]);
 
             return $this->successResponse($debt, 'تم تسجيل الدين بنجاح.');
@@ -75,72 +77,34 @@ class DebtService
     {
         DB::beginTransaction();
         try {
-            $originalCredit = $debt->credit ?? 0;
-            $originalDebit = $debt->debit ?? 0;
-            $originalBalance = $debt->total_balance;
-            $difference = 0;
-
-            // Special handling for credit-to-debit conversion
-            if ($originalCredit > 0 && isset($data['debit'])) {
-                // Calculate total impact: remove original credit and apply new debit
-                $difference = -$originalCredit - $data['debit'];
-                $newBalance = $originalBalance + $difference;
 
 
-                // Update the record
-                $debt->update([
-                    'credit' => 0,
-                    'debit' => $data['debit'],
-                    'total_balance' => $newBalance,
-                    'debt_date' => $data['debt_date'] ?? $debt->debt_date,
-                    'receipt_id' => $data['receipt_id'] ?? $debt->receipt_id,
-                ]);
-
-                // Trigger event to update subsequent balances
-                event(new DebtProcessed($debt->id, $debt->customer_id, $difference));
-                DB::commit();
-                return $this->successResponse($debt, 'تم تحديث الدين بنجاح.');
-            }
-
-            // Normal credit update
-            if (isset($data['credit'])) {
-                $difference = $data['credit'] - $originalCredit;
-                $debt->debit =0; // Clear debit if setting credit
-            }
-            // Normal debit update
-            elseif (isset($data['debit'])) {
-                $difference = $originalDebit - $data['debit'];
-                $debt->credit = 0; // Clear credit if setting debit
-            }
-
-            // Calculate and validate new balance
-            $newBalance = $originalBalance + $difference;
-
-
-            // Apply updates
             $debt->update([
-                'credit' => $data['credit'] ??  0,
-                'debit' => $data['debit'] ??  0,
+                'credit' => $data['credit'] ?? 0,
+                'debit' => $data['debit'] ?? 0,
                 'debt_date' => $data['debt_date'] ?? $debt->debt_date,
-                'total_balance' => $newBalance,
                 'receipt_id' => $data['receipt_id'] ?? $debt->receipt_id,
             ]);
 
-            // Trigger balance updates if needed
-            if ($difference != 0) {
-                event(new DebtProcessed($debt->id, $debt->customer_id, $difference));
+            $debts = Debt::where('customer_id', $debt->customer_id)
+                ->orderBy('id')
+                ->get();
+
+            $total = 0;
+            foreach ($debts as $d) {
+                $total += $d->credit - $d->debit;
+                $d->update(['total_balance' => $total]);
             }
 
             DB::commit();
-            return $this->successResponse($debt, 'تم تحديث الدين بنجاح.');
 
+            return $this->successResponse($debt, 'تم تحديث الدين بنجاح.');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Update debt error: ' . $e->getMessage());
             return $this->errorResponse('حدث خطأ أثناء تحديث الدين. يرجى المحاولة لاحقًا.');
         }
     }
-
     /**
      * Delete a debt record and adjust subsequent balances.
      *
