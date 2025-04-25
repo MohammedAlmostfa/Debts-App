@@ -27,17 +27,18 @@ class DebtProcessed
      * @var float
      */
     public $difference;
-
+    public $customerId;
     /**
      * Create a new event instance.
      *
      * @param int $debtId
      * @param float $difference
      */
-    public function __construct($debtId, $difference)
+    public function __construct($debtId, $customerId, $difference)
     {
-
         $this->debtId = $debtId;
+        $this->customerId = $customerId;
         $this->difference = $difference;
     }
+
 }

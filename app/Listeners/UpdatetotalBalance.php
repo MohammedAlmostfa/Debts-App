@@ -22,17 +22,20 @@ class UpdatetotalBalance implements ShouldQueue
     public function handle(DebtProcessed $event): void
     {
         try {
+            Log::info("Processing DebtProcessed event with Debt ID: {$event->debtId}, Difference: {$event->difference}");
 
+            Debt::where([
+                ['id', '>', $event->debtId],
+                ['customer_id', '=', $event->customerId],
+            ])->increment('total_balance', $event->difference);
 
-            // تحديث جميع الديون الأحدث من الدين الحالي
-            Debt::where('id', '>', $event->debtId)
-                ->increment('total_balance', $event->difference);
-
+            Log::info("Successfully updated total_balance for debts after Debt ID: {$event->debtId}");
         } catch (Throwable $e) {
             Log::error("Failed to update debts balance: " . $e->getMessage());
             $this->fail($e);
         }
     }
+
 
     /**
      * Handle a job failure.
@@ -43,9 +46,9 @@ class UpdatetotalBalance implements ShouldQueue
      */
     public function failed(DebtProcessed $event, Throwable $exception): void
     {
-        Log::critical("Debt balance update job failed for debt ID: {$event->debtId}", [
+        Log::critical("Debt balance update job failed for Debt ID: {$event->debtId}", [
             'error' => $exception->getMessage(),
-            'difference' => $event->difference
+            'difference' => $event->difference,
         ]);
     }
 }
