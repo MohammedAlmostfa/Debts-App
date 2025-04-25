@@ -105,12 +105,12 @@ class DebtService
             // Normal credit update
             if (isset($data['credit'])) {
                 $difference = $data['credit'] - $originalCredit;
-                $debt->debit = null; // Clear debit if setting credit
+                $debt->debit =0; // Clear debit if setting credit
             }
             // Normal debit update
             elseif (isset($data['debit'])) {
                 $difference = $originalDebit - $data['debit'];
-                $debt->credit = null; // Clear credit if setting debit
+                $debt->credit = 0; // Clear credit if setting debit
             }
 
             // Calculate and validate new balance
@@ -119,8 +119,8 @@ class DebtService
 
             // Apply updates
             $debt->update([
-                'credit' => $data['credit'] ?? $debt->credit,
-                'debit' => $data['debit'] ?? $debt->debit,
+                'credit' => $data['credit'] ??  0,
+                'debit' => $data['debit'] ??  0,
                 'debt_date' => $data['debt_date'] ?? $debt->debt_date,
                 'total_balance' => $newBalance,
                 'details' => $data['details'] ?? $debt->details,
