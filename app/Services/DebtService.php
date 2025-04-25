@@ -50,11 +50,11 @@ class DebtService
             // Create the new debt record
             $debt = Debt::create([
                 'customer_id' => $data['customer_id'],
-                'credit' => $data['credit'] ?? null,
-                'debit' => $data['debit'] ?? null,
+                'credit' => $data['credit'] ?? 0,
+                'debit' => $data['debit'] ?? 0,
                 'debt_date' => $data['debt_date'] ?? now(),
                 'total_balance' => $newBalance,
-                'details' => $data['details'] ?? null,
+                'receipt_id' => $data['receipt_id'] ?? null,
             ]);
 
             return $this->successResponse($debt, 'تم تسجيل الدين بنجاح.');
