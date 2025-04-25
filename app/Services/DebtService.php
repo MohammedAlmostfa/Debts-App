@@ -39,9 +39,7 @@ class DebtService
                 $newBalance = $currentBalance + $data['credit'];
             } elseif (!empty($data['debit'])) {
                 // Prevent over-withdrawal
-                if ($data['debit'] > $currentBalance) {
-                    return $this->errorResponse('المبلغ المطلوب أكبر من الرصيد المتوفر.');
-                }
+
                 $newBalance = $currentBalance - $data['debit'];
             } else {
                 return $this->errorResponse('يجب تقديم قيمة صحيحة لـ credit أو debit.');
@@ -50,8 +48,8 @@ class DebtService
             // Create the new debt record
             $debt = Debt::create([
                 'customer_id' => $data['customer_id'],
-                'credit' => $data['credit'] ?? null,
-                'debit' => $data['debit'] ?? null,
+                'credit' => $data['credit'] ?? 0,
+                'debit' => $data['debit'] ?? 0,
                 'debt_date' => $data['debt_date'] ?? now(),
                 'total_balance' => $newBalance,
                 'details' => $data['details'] ?? null,
@@ -88,10 +86,6 @@ class DebtService
                 $difference = -$originalCredit - $data['debit'];
                 $newBalance = $originalBalance + $difference;
 
-                // Validate available balance
-                if ($newBalance < 0) {
-                    return $this->errorResponse('المبلغ المطلوب أكبر من الرصيد المتوفر.');
-                }
 
                 // Update the record
                 $debt->update([
@@ -121,9 +115,7 @@ class DebtService
 
             // Calculate and validate new balance
             $newBalance = $originalBalance + $difference;
-            if ($newBalance < 0) {
-                return $this->errorResponse('المبلغ المطلوب أكبر من الرصيد المتوفر.');
-            }
+
 
             // Apply updates
             $debt->update([
