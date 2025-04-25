@@ -24,10 +24,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
 
-        Event::listen(
-            DebtProcessed::class,
-            UpdatetotalBalance::class
-        );
+
 
     }
 }
