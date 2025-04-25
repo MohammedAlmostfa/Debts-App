@@ -22,4 +22,26 @@ class Debt extends Model
     {
         return $this->belongsTo(Customer::class);
     }
+    public function scopeFilterBy($query, array $filteringData)
+    {
+        // Filter where 'credit' is null
+        if (isset($filteringData['debit'])) {
+            $query->whereNull('credit');
+
+        }
+
+        // Filter where 'debit' is null
+        if (isset($filteringData['credit'])) {
+            $query->whereNull('debit');
+
+        }
+
+        // Filter by debt_date if provided
+        if (isset($filteringData['debt_date'])) {
+            $query->whereDate('debt_date', '=', $filteringData['debt_date']);
+        }
+
+        return $query;
+    }
+
 }

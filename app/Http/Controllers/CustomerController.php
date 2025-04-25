@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use GuzzleHttp\Psr7\Request;
 use App\Services\CustomerService;
 use Illuminate\Http\JsonResponse;
 use App\Http\Resources\customerResource;
 use App\Http\Requests\CustomerRequest\fitrtingData;
+use App\Http\Requests\DebetRequest\fitrtinDebetgData;
 use App\Http\Requests\CustomerRequest\StoreCustomerData;
 use App\Http\Requests\CustomerRequest\UpdateCustomerData;
 
@@ -53,9 +55,10 @@ class CustomerController extends Controller
      * @param int $id The ID of the customer to retrieve
      * @return JsonResponse Returns detailed information about the customer or error response
      */
-    public function show($id): JsonResponse
+    public function show($id, fitrtinDebetgData $request): JsonResponse
     {
-        $result = $this->customerService->getCustomerDebts($id);
+        $vaildaedData=$request->validated();
+        $result = $this->customerService->getCustomerDebts($id, $vaildaedData);
 
         return $result['status'] === 200
              ? $this->successshow($result['data'], $result['message'], $result['status'])
