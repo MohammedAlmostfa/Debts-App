@@ -26,7 +26,7 @@ class Receipt extends Model
     }
     public function scopeFilterBy($query, array $filteringData)
     {
-        if (isset($filteringData['name'])) {
+        if (isset($filteringData['customer_name'])) {
             $query->where('customer_name', 'LIKE', "%{$filteringData['customer_name']}%");
         }
         if (isset($filteringData['phone'])) {

@@ -39,12 +39,8 @@ class DebtService
                 $newBalance = $currentBalance + $data['credit'];
             } elseif (!empty($data['debit'])) {
                 // Prevent over-withdrawal
-                if ($data['debit'] > $currentBalance) {
-                    return $this->errorResponse('المبلغ المطلوب أكبر من الرصيد المتوفر.');
-                }
+
                 $newBalance = $currentBalance - $data['debit'];
-            } else {
-                return $this->errorResponse('يجب تقديم قيمة صحيحة لـ credit أو debit.');
             }
 
             // Create the new debt record
