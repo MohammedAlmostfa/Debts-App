@@ -66,7 +66,6 @@ class ReceiptService
             // Create the receipt
             $receipt = Receipt::create([
                 'customer_name' => $data['customer_name'],
-                'phone' => $data['phone'] ,
                 'total_price' => $data['total_price'],
                 'receipt_number' => $data['receipt_number'],
                 'type' => $data['type'],
@@ -95,7 +94,6 @@ class ReceiptService
             // Update receipt fields selectively
             $receipt->update([
                 'customer_name' => $data['customer_name'] ?? $receipt->customer_name,
-                'phone' => $data['phone'] ?? $receipt->phone,
                 'total_price' => $data['total_price'] ?? $receipt->total_price,
                 'receipt_number' => $data['receipt_number'] ?? $receipt->receipt_number,
                 'receipt_date' => $data['receipt_date'] ?? $receipt->receipt_date,

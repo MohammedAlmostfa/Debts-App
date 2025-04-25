@@ -26,8 +26,6 @@ class fitrtingReceiptData extends FormRequest
     {
         return [
          'customer_name' => 'nullable|string|max:255',
-            'receipt_number' => 'nullable|string',
-            'phone' => 'nullable|string|max:20',
             'receipt_date' => 'nullable|date',
             'type'=>'nullable|string',
         ];
