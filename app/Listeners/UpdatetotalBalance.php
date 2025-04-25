@@ -9,7 +9,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
-class UpdatetotalBalance implements ShouldQueue
+class UpdatetotalBalance
 {
     use InteractsWithQueue;
 

@@ -78,10 +78,8 @@ class DebtService
                 $newBalance += $data['credit'] - ($debt->credit ?? 0);
 
                 $differenceAmount = $newBalance - $debt->total_balance;
-                DebtProcessed::dispatch($debt->id, $debt->customer_id, $differenceAmount);
-
+                event(new DebtProcessed($debt->id, $debt->customer_id, $data));
                 $debt->debit = null; // Reset debit if credit is provided
-
                 // Handle debit update
             } elseif (!empty($data['debit'])) {
                 if ($data['debit'] > $newBalance) {
@@ -91,7 +89,9 @@ class DebtService
                 $newBalance -= $data['debit'] - ($debt->debit ?? 0);
 
                 $differenceAmount = $newBalance - $debt->total_balance;
-                DebtProcessed::dispatch($debt->id, $debt->customer_id, $differenceAmount);
+                event(new DebtProcessed($debt->id, $debt->customer_id, $data));
+
+
 
                 $debt->credit = null; // Reset credit if debit is provided
             }
@@ -130,7 +130,8 @@ class DebtService
             // Handle credit removal
             if (!empty($debt->credit)) {
                 $data = -$debt->credit;
-                DebtProcessed::dispatch($debt->id, $debt->customer_id, $data);
+                event(new DebtProcessed($debt->id, $debt->customer_id, $data));
+
 
                 $debt->debit = null;
                 $debt->save();
@@ -138,7 +139,9 @@ class DebtService
                 // Handle debit removal
             } elseif (!empty($debt->debit)) {
                 $data = $debt->debit;
-                DebtProcessed::dispatch($debt->id, $debt->customer_id, $data);
+
+                event(new DebtProcessed($debt->id, $debt->customer_id, $data));
+
 
             }
 

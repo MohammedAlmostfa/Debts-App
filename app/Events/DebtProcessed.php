@@ -9,9 +9,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 
 class DebtProcessed
 {
-    use Dispatchable;
-    use InteractsWithSockets;
-    use SerializesModels;
+
 
 
     /**
