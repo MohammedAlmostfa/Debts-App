@@ -27,7 +27,7 @@ class UpdateDebetData extends FormRequest
             'credit' => 'nullable|numeric|min:0',
             'debit'  => 'nullable|numeric|min:0',
             'debt_date' => 'nullable|date|before:now',
-               'receipt_id' => 'nullable|numeric|exists:receipts,receipt_number'
+               'receipt_id' => 'nullable|numeric'
         ];
     }
     protected function failedValidation(Validator $validator): void

@@ -191,18 +191,19 @@ return [
         'name' => 'الاسم',
         'phone' => 'رقم الهاتف',
         'notes' => 'ملاحظات',
-        'record_id' => 'معرّف السجل',
+        'record_id' => 'رقم السجل',
         'customer_name' => 'اسم العميل',
         'total_price' => 'الإجمالي السعر',
         'receipt_number' => 'رقم الإيصال',
         'receipt_date' => 'تاريخ الإيصال',
-        'receipt_id' => 'معرّف الإيصال',
+        'receipt_id' => 'رقم الإيصال',
         'description' => 'الوصف',
         'quantity' => 'الكمية',
         'unit_price' => 'سعر الوحدة',
         'password' => 'كلمة المرور',
         'item' => 'عناصر الفاتورة',
         'type' => 'نوع',
+
 
 ],
 

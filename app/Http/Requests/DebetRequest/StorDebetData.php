@@ -34,7 +34,7 @@ class StorDebetData extends FormRequest
             'credit' => 'nullable|numeric|min:0|required_without:debit',
             'debit'  => 'nullable|numeric|min:0|required_without:credit',
             'debt_date' => 'nullable|date|before_or_equal:now',
-            'receipt_id' => 'nullable|numeric|exists:receipts,receipt_number'
+            'receipt_id' => 'nullable|numeric|',
         ];
     }     protected function failedValidation(Validator $validator): void
     {
