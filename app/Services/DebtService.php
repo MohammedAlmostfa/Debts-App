@@ -78,7 +78,7 @@ class DebtService
                 $newBalance += $data['credit'] - ($debt->credit ?? 0);
 
                 $differenceAmount = $newBalance - $debt->total_balance;
-                event(new DebtProcessed($debt->id, $debt->customer_id, $data));
+                event(new DebtProcessed($debt->id, $debt->customer_id, $differenceAmount));
                 $debt->debit = null; // Reset debit if credit is provided
                 // Handle debit update
             } elseif (!empty($data['debit'])) {
@@ -89,7 +89,7 @@ class DebtService
                 $newBalance -= $data['debit'] - ($debt->debit ?? 0);
 
                 $differenceAmount = $newBalance - $debt->total_balance;
-                event(new DebtProcessed($debt->id, $debt->customer_id, $data));
+                event(new DebtProcessed($debt->id, $debt->customer_id, $differenceAmount));
 
 
 

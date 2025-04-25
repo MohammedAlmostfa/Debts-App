@@ -10,6 +10,8 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 class DebtProcessed
 {
 
+    use InteractsWithSockets;
+    use SerializesModels;
 
 
     /**
