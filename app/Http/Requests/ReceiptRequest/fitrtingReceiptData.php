@@ -29,6 +29,7 @@ class fitrtingReceiptData extends FormRequest
             'receipt_number' => 'nullable|string',
             'phone' => 'nullable|string|max:20',
             'receipt_date' => 'nullable|date',
+            'type'=>'nullable|string',
         ];
     }
     protected function failedValidation(Validator $validator): void

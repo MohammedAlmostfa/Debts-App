@@ -27,6 +27,7 @@ class UpdateReceiptData extends FormRequest
             'customer_name' => 'nullable|string|max:255',
             'total_price' => 'nullable|numeric|min:0',
             'phone' => 'nullable|max:20',
+            'type'=>'nullable|string',
             'receipt_date' => 'nullable|date|before_or_equal:now',
             'items' => 'nullable|array',
             'items.*.id' => 'required|integer',

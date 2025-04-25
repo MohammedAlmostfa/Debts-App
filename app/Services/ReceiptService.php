@@ -69,6 +69,7 @@ class ReceiptService
                 'phone' => $data['phone'] ,
                 'total_price' => $data['total_price'],
                 'receipt_number' => $data['receipt_number'],
+                'type' => $data['type'],
                 'receipt_date' => $data['receipt_date'] ?? now(),
             ]);
 
@@ -98,6 +99,7 @@ class ReceiptService
                 'total_price' => $data['total_price'] ?? $receipt->total_price,
                 'receipt_number' => $data['receipt_number'] ?? $receipt->receipt_number,
                 'receipt_date' => $data['receipt_date'] ?? $receipt->receipt_date,
+                'type' => $data['type']?? $receipt->type,
             ]);
 
             // Update associated receipt items (optional handling for items)
