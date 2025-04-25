@@ -16,7 +16,7 @@ return new class extends Migration {
             $table->string('customer_name');
             $table->string('phone');
             $table->decimal('total_price', 10, 2);
-            $table->string('receipt_number')->unique();
+            $table->decimal('receipt_number')->unique();
             $table->date('receipt_date');
             $table->enum('type', ['نقدي','اجلي']);
             $table->timestamps();
