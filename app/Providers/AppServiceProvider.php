@@ -2,7 +2,11 @@
 
 namespace App\Providers;
 
+use App\Events\DebtProcessed;
+use App\Listeners\UpdatetotalBalance;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use App\Http\Requests\DebetRequest\UpdateDebetData;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +23,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+
+        Event::listen(
+            DebtProcessed::class,
+            UpdatetotalBalance::class
+        );
+
     }
 }

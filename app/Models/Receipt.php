@@ -38,7 +38,6 @@ class Receipt extends Model
         if (isset($filteringData['receipt_date'])) {
             $query->where('receipt_date', '=', $filteringData['receipt_date']);
         }
-
         return $query;
     }
 }
