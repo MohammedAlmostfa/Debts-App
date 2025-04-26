@@ -13,7 +13,7 @@ class DatabaseSeeder extends Seeder
     {
         $user = User::create([
             'name' => 'almostfa',
-            'password' => bcrypt('123456'),
+            'password' => bcrypt('12345678'),
         ]);
     }
 }
