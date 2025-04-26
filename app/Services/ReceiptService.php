@@ -95,7 +95,6 @@ class ReceiptService
             $receipt->update([
                 'customer_name' => $data['customer_name'] ?? $receipt->customer_name,
                 'total_price' => $data['total_price'] ?? $receipt->total_price,
-                'receipt_number' => $data['receipt_number'] ?? $receipt->receipt_number,
                 'receipt_date' => $data['receipt_date'] ?? $receipt->receipt_date,
                 'type' => $data['type']?? $receipt->type,
             ]);
