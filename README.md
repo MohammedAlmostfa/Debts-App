@@ -67,37 +67,19 @@ A complete management system designed for service offices. This project simplifi
 
 5. **Update `.env`** with your MySQL database settings.
 
-6. **Generate App Key**:
-
-    ```sh
-    php artisan key:generate
-    ```
-
-7. **Generate JWT Secret Key**:
-
-    ```sh
-    php artisan jwt:secret
-    ```
-
-8. **Run Migrations**:
+6. **Run Migrations**:
 
     ```sh
     php artisan migrate
     ```
 
-9. **Seed the Database (optional)**:
+7. **Seed the Database (optional)**:
 
     ```sh
     php artisan db:seed
     ```
 
-10. **Run the Job Queue**:
-
-    ```sh
-    php artisan queue:work
-    ```
-
-11. **Serve the Application**:
+8. **Serve the Application**:
 
     ```sh
     php artisan serve
