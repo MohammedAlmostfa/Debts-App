@@ -49,21 +49,6 @@ class CustomerController extends Controller
              : $this->error($result['data'], $result['message'], $result['status']);
     }
 
-    /**
-     * Show detailed information about a specific customer, including debts.
-     *
-     * @param int $id The ID of the customer to retrieve
-     * @return JsonResponse Returns detailed information about the customer or error response
-     */
-    public function show($id, fitrtinDebetgData $request): JsonResponse
-    {
-        $vaildaedData=$request->validated();
-        $result = $this->customerService->getCustomerDebts($id, $vaildaedData);
-
-        return $result['status'] === 200
-             ? $this->successshow($result['data'], $result['message'], $result['status'])
-             : $this->error($result['data'], $result['message'], $result['status']);
-    }
 
     /**
      * Store a new customer record in the database.
