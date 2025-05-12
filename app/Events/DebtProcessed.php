@@ -9,10 +9,8 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 
 class DebtProcessed
 {
-
     use InteractsWithSockets;
     use SerializesModels;
-
 
     /**
      * The debt ID that triggered the event
@@ -27,18 +25,25 @@ class DebtProcessed
      * @var float
      */
     public $difference;
-    public $customerId;
+
+    /**
+     * The store ID associated with the debt
+     *
+     * @var int
+     */
+    public $storeId;
+
     /**
      * Create a new event instance.
      *
      * @param int $debtId
+     * @param int $storeId
      * @param float $difference
      */
-    public function __construct($debtId, $customerId, $difference)
+    public function __construct($debtId, $storeId, $difference)
     {
         $this->debtId = $debtId;
-        $this->customerId = $customerId;
+        $this->storeId = $storeId;
         $this->difference = $difference;
     }
-
 }

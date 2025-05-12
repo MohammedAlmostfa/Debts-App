@@ -11,7 +11,7 @@ return new class extends Migration {
     {
         Schema::create('debts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('customer_id')->constrained()->onDelete('cascade');
+            $table->foreignId('store_id')->constrained()->onDelete('cascade');
             $table->decimal('credit', 10, 2)->default(0);
             $table->decimal('debit', 10, 2)->default(0);
             $table->date('debt_date');

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Cache\Store;
 use Illuminate\Database\Eloquent\Model;
 
 class Debt extends Model
@@ -18,9 +19,9 @@ class Debt extends Model
         'total_balance' => 'integer',
         'receipt_id' => 'integer',
     ];
-    public function customer()
+    public function stroe()
     {
-        return $this->belongsTo(Customer::class);
+        return $this->belongsTo(Store::class);
     }
     public function scopeFilterBy($query, array $filteringData)
     {

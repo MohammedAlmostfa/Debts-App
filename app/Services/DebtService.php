@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Services;
 
 use Exception;
@@ -18,11 +17,11 @@ class DebtService
      * Create a new debt record with proper balance calculation.
      *
      * @param array $data {
-     *     @var int      $customer_id  Required. The customer ID
-     *     @var float    $credit       Optional. The credit amount (positive value)
-     *     @var float    $debit        Optional. The debit amount (positive value)
-     *     @var string   $debt_date    Optional. The date of the transaction
-     *     @var string   $details      Optional. Additional details
+     *     @var int      $store_id  Required. The store ID
+     *     @var float    $credit    Optional. The credit amount (positive value)
+     *     @var float    $debit     Optional. The debit amount (positive value)
+     *     @var string   $debt_date Optional. The date of the transaction
+     *     @var string   $details   Optional. Additional details
      * }
      * @return array Response array with status, message and data
      */
@@ -30,7 +29,7 @@ class DebtService
     {
         try {
             // Get the current balance from the most recent debt record
-            $currentBalance = Debt::where('customer_id', $data['customer_id'])
+            $currentBalance = Debt::where('store_id', $data['store_id'])
                                   ->latest('created_at')
                                   ->value('total_balance') ?? 0;
 
@@ -39,13 +38,12 @@ class DebtService
                 $newBalance = $currentBalance + $data['credit'];
             } elseif (!empty($data['debit'])) {
                 // Prevent over-withdrawal
-
                 $newBalance = $currentBalance - $data['debit'];
             }
 
             // Create the new debt record
             $debt = Debt::create([
-                'customer_id' => $data['customer_id'],
+                'store_id' => $data['store_id'],
                 'credit' => $data['credit'] ?? 0,
                 'debit' => $data['debit'] ?? 0,
                 'debt_date' => $data['debt_date'] ?? now(),
@@ -63,7 +61,6 @@ class DebtService
 
     /**
      * Update an existing debt record with proper balance recalculation.
-     * Handles special case of converting between credit and debit types.
      *
      * @param array $data Updated values (same structure as createDebt)
      * @param Debt $debt The debt record to update
@@ -73,8 +70,6 @@ class DebtService
     {
         DB::beginTransaction();
         try {
-
-
             $debt->update([
                 'credit' => $data['credit'] ?? 0,
                 'debit' => $data['debit'] ?? 0,
@@ -82,7 +77,7 @@ class DebtService
                 'receipt_id' => $data['receipt_id'] ?? $debt->receipt_id,
             ]);
 
-            $debts = Debt::where('customer_id', $debt->customer_id)
+            $debts = Debt::where('store_id', $debt->store_id)
                 ->orderBy('id')
                 ->get();
 
@@ -93,14 +88,14 @@ class DebtService
             }
 
             DB::commit();
-
             return $this->successResponse($debt, 'تم تحديث الدين بنجاح.');
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             Log::error('Update debt error: ' . $e->getMessage());
             return $this->errorResponse('حدث خطأ أثناء تحديث الدين. يرجى المحاولة لاحقًا.');
         }
     }
+
     /**
      * Delete a debt record and adjust subsequent balances.
      *
@@ -112,20 +107,16 @@ class DebtService
         try {
             // Handle balance adjustment before deletion
             if (!empty($debt->credit)) {
-                // Reverse the credit impact
                 $adjustment = -$debt->credit;
-                event(new DebtProcessed($debt->id, $debt->customer_id, $adjustment));
+                event(new DebtProcessed($debt->id, $debt->store_id, $adjustment));
             } elseif (!empty($debt->debit)) {
-                // Reverse the debit impact
                 $adjustment = $debt->debit;
-                event(new DebtProcessed($debt->id, $debt->customer_id, $adjustment));
+                event(new DebtProcessed($debt->id, $debt->store_id, $adjustment));
             }
 
             // Delete the record
             $debt->delete();
-
             return $this->successResponse(null, 'تم حذف الدين بنجاح.');
-
         } catch (Exception $e) {
             Log::error('Delete debt error: ' . $e->getMessage());
             return $this->errorResponse('حدث خطأ أثناء حذف الدين. يرجى المحاولة لاحقًا.');

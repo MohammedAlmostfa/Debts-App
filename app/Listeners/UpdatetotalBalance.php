@@ -26,7 +26,7 @@ class UpdatetotalBalance
 
             Debt::where([
                 ['id', '>', $event->debtId],
-                ['customer_id', '=', $event->customerId],
+                ['store_id', '=', $event->storeId],
             ])->increment('total_balance', $event->difference);
 
             Log::info("Successfully updated total_balance for debts after Debt ID: {$event->debtId}");
@@ -35,7 +35,6 @@ class UpdatetotalBalance
             $this->fail($e);
         }
     }
-
 
     /**
      * Handle a job failure.

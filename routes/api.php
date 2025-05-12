@@ -6,6 +6,7 @@ use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DebtController;
 use App\Http\Controllers\ReceiptController;
+use App\Http\Controllers\StoreController;
 
 Route::post('/login', [AuthController::class, 'login']); // Handles user login
 
@@ -18,3 +19,4 @@ Route::apiResource('customer', CustomerController::class);
 Route::apiResource('debt', DebtController::class);
 Route::apiResource('receipt', ReceiptController::class);
 Route::get('receipt/{receipt}/receiptItem', [ReceiptController::class,'getReceiptItems']);
+Route::apiResource('store', StoreController::class);
