@@ -2,24 +2,23 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Cache\Store;
 use Illuminate\Database\Eloquent\Model;
 
-class Debt extends Model
+class CustomerDebts extends Model
 {
 
-    protected $fillable = ['store_id', 'credit', 'debit', 'debt_date', 'total_balance', 'receipt_id'];
+    protected $fillable = ['customer_id', 'debit', 'debt_date', 'total_balance', 'receipt_id'];
 
 
     protected $casts = [
-        'store_id' => 'integer',
+        'customer_id' => 'integer',
         'credit' => 'integer',
         'debit' => 'integer',
         'debt_date' => 'date',
         'total_balance' => 'integer',
         'receipt_id' => 'integer',
     ];
-    public function stroe()
+    public function customer()
     {
         return $this->belongsTo(Store::class);
     }
@@ -30,13 +29,6 @@ class Debt extends Model
             $query->whereNull('credit');
 
         }
-
-        // Filter where 'debit' is null
-        if (isset($filteringData['credit'])) {
-            $query->whereNull('debit');
-
-        }
-
         // Filter by debt_date if provided
         if (isset($filteringData['debt_date'])) {
             $query->whereDate('debt_date', '=', $filteringData['debt_date']);
