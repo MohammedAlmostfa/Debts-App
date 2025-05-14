@@ -91,7 +91,13 @@ class CustomerController extends Controller
     }
 
 
-    public function show($id)
+    /**
+      * Display customer details along with their debts.
+      *
+      * @param int $id Customer ID.
+      * @return JsonResponse Returns customer debts or error response.
+      */
+    public function show($id): JsonResponse
     {
         $result = $this->customerService->getCustomerDebts($id);
 

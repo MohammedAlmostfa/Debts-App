@@ -91,7 +91,7 @@ class DebtController extends Controller
 
         // Return an appropriate response based on the result status
         return $result['status'] === 200
-            ? $this->success($result['data'], $result['message'], $result['status'])
+            ? $this->success(new $result['data'], $result['message'], $result['status'])
             : $this->error($result['data'], $result['message'], $result['status']);
     }
 }

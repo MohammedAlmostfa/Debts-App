@@ -88,7 +88,13 @@ class StoreController extends Controller
             ? $this->success($result['data'], $result['message'], $result['status'])
             : $this->error($result['data'], $result['message'], $result['status']);
     }
-    public function show($id)
+    /**
+    * Retrieve store details along with its debts.
+    *
+    * @param int $id Store ID.
+    * @return JsonResponse Returns store debts or error response.
+    */
+    public function show($id): JsonResponse
     {
         $result = $this->storeService->getStoreDebts($id);
 
