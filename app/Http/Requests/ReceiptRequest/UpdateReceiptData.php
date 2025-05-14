@@ -25,14 +25,14 @@ class UpdateReceiptData extends FormRequest
     {
         return [
             'customer_name' => 'nullable|string|max:255',
-            'total_price' => 'nullable|numeric|min:0',
+            'total_price' => 'nullable|integer|min:0',
             'type'=>'nullable|string',
             'receipt_date' => 'nullable|date|before_or_equal:now',
             'items' => 'nullable|array',
             'items.*.id' => 'required|integer',
             'items.*.description' => 'nullable|string|max:255',
             'items.*.quantity' => 'nullable|integer|min:1',
-            'items.*.unit_price' => 'nullable|numeric|min:0',
+            'items.*.unit_price' => 'nullable|integer|min:0',
         ];
     }
 

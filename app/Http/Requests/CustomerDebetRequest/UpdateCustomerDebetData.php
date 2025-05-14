@@ -24,10 +24,10 @@ class UpdateCustomerDebetData extends FormRequest
     public function rules(): array
     {
         return [
-            'credit' => 'nullable|numeric|min:0|required_without:debit',
-            'debit'  => 'nullable|numeric|min:0|required_without:credit',
+            'credit' => 'nullable|integer|min:0|required_without:debit',
+            'debit'  => 'nullable|integer|min:0|required_without:credit',
             'debt_date' => 'nullable|date|before:now',
-                           'receipt_id' => 'nullable|numeric'
+            'receipt_id' => 'nullable|integer'
 
         ];
     }
