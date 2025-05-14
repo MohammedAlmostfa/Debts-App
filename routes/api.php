@@ -1,14 +1,15 @@
 <?php
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CustomerController;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CustomerDebtsController;
-use App\Http\Controllers\DebtController;
-use App\Http\Controllers\ReceiptController;
-use App\Http\Controllers\StoreController;
 use App\Models\CustomerDebts;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DebtController;
+use App\Http\Controllers\StoreController;
+use App\Http\Controllers\ReceiptController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\CustomerDebtsController;
+use App\Http\Controllers\FinancialReportController;
 
 Route::post('/login', [AuthController::class, 'login']); // Handles user login
 
@@ -24,3 +25,4 @@ Route::apiResource('customerdebt', CustomerDebtsController::class);
 Route::apiResource('receipt', ReceiptController::class);
 Route::get('receipt/{receipt}/receiptItem', [ReceiptController::class,'getReceiptItems']);
 Route::apiResource('store', StoreController::class);
+Route::get('/financialReport', [FinancialReportController::class, 'index']);
