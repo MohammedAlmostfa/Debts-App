@@ -88,7 +88,14 @@ class StoreController extends Controller
             ? $this->success($result['data'], $result['message'], $result['status'])
             : $this->error($result['data'], $result['message'], $result['status']);
     }
+    public function show($id)
+    {
+        $result = $this->storeService->getStoreDebts($id);
 
+        return $result['status'] === 200
+            ? $this->success($result['data'], $result['message'], $result['status'])
+            : $this->error($result['data'], $result['message'], $result['status']);
+    }
     /**
      * Delete a store record from the database.
      *

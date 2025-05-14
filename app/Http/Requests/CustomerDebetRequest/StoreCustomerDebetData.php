@@ -3,6 +3,8 @@
 namespace App\Http\Requests\CustomerDebetRequest;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 
 class StoreCustomerDebetData extends FormRequest
 {
@@ -11,7 +13,7 @@ class StoreCustomerDebetData extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,20 @@ class StoreCustomerDebetData extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'customer_id' => 'required|integer|exists:customers,id',
+            'credit' => 'nullable|numeric|min:0|required_without:debit',
+            'debit'  => 'nullable|numeric|min:0|required_without:credit',
+            'debt_date' => 'nullable|date|before_or_equal:now',
+            'receipt_id' => 'nullable|numeric|',
         ];
+    }
+
+    protected function failedValidation(Validator $validator): void
+    {
+        throw new HttpResponseException(response()->json([
+            'status' => 'error',
+            'message' => 'فشل التحقق من صحة البيانات',
+            'errors' => $validator->errors(),
+        ], 422));
     }
 }

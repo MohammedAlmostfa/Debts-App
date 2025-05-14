@@ -49,15 +49,11 @@ class CustomerService
      * @param int $id ID of the customer.
      * @return array Response containing status, message, and customer debts.
      */
-    public function getCustomerDebts($id, $filteringData)
+    public function getCustomerDebts($id)
     {
         try {
             // Fetch the customer along with their debts
-            $customer = Customer::with(['debts' => function ($query) use ($filteringData) {
-                $query->when(!empty($filteringData), function ($query) use ($filteringData) {
-                    $query->filterBy($filteringData);
-                });
-            }])->findOrFail($id);
+            $customer = Customer::with(['customerdebts'])->findOrFail($id);
 
             // Return success response with debts
             return $this->successResponse($customer->debts, 'تم استرجاع ديون العميل بنجاح', 200);

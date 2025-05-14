@@ -18,7 +18,7 @@ return new class extends Migration {
             $table->decimal('total_price', 10, 2);
             $table->decimal('receipt_number')->unique();
             $table->date('receipt_date');
-            $table->enum('type', ['نقدي','اجل']);
+            $table->enum('type', ['نقدي','اجل','عرض سعر']);
             $table->timestamps();
         });
 

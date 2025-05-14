@@ -182,7 +182,8 @@ return [
     |
     */
 'attributes' => [
-       'customer_id' => 'معرّف العميل',
+       'customer_id' => ' العميل',
+       'store_id'=>' المتجر',
         'credit' => 'الرصيد',
         'debit' => 'الدين',
         'debt_date' => 'تاريخ الدين',

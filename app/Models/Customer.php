@@ -17,9 +17,9 @@ class Customer extends Model
         'record_id' => 'integer',
     ];
 
-    public function debts()
+    public function customerdebts()
     {
-        return $this->hasMany(Debt::class);
+        return $this->hasMany(CustomerDebts::class);
     }
 
     public function receipts()

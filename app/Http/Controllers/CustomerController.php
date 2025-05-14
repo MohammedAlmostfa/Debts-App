@@ -90,6 +90,16 @@ class CustomerController extends Controller
             : $this->error($result['data'], $result['message'], $result['status']);
     }
 
+
+    public function show($id)
+    {
+        $result = $this->customerService->getCustomerDebts($id);
+
+        return $result['status'] === 200
+            ? $this->success($result['data'], $result['message'], $result['status'])
+            : $this->error($result['data'], $result['message'], $result['status']);
+    }
+
     /**
      * Delete a customer record from the database.
      *

@@ -74,6 +74,7 @@ class DebtController extends Controller
             : $this->error($result['data'], $result['message'], $result['status']);
     }
 
+
     /**
      * Delete a debt record.
      *

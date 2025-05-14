@@ -30,7 +30,7 @@ class StorDebetData extends FormRequest
     public function rules(): array
     {
         return [
-            'customer_id' => 'required|integer|exists:customers,id',
+            'store_id' => 'required|integer|exists:stores,id',
             'credit' => 'nullable|numeric|min:0|required_without:debit',
             'debit'  => 'nullable|numeric|min:0|required_without:credit',
             'debt_date' => 'nullable|date|before_or_equal:now',

@@ -44,15 +44,11 @@ class StoreService
      * @param int $id ID of the store.
      * @return array Response containing status, message, and store debts.
      */
-    public function getStoreDebts($id, $filteringData)
+    public function getStoreDebts($id)
     {
         try {
-            // Fetch the store along with its debts
-            $store = Store::with(['debts' => function ($query) use ($filteringData) {
-                $query->when(!empty($filteringData), function ($query) use ($filteringData) {
-                    $query->filterBy($filteringData);
-                });
-            }])->findOrFail($id);
+
+            $store = Store::with(['debts'])->findOrFail($id);
 
             return $this->successResponse($store->debts, 'تم استرجاع ديون المتجر بنجاح', 200);
         } catch (Exception $e) {

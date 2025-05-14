@@ -2,34 +2,32 @@
 namespace App\Services;
 
 use Exception;
-use App\Models\Debt;
+use App\Models\Customer;
 use App\Events\DebtProcessed;
+use App\Models\CustomerDebts;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 /**
- * Service class for managing debt operations including creation,
- * modification, and deletion of debt records with proper balance tracking.
+ * Service class responsible for managing customer debts.
+ * It handles creation, updating, and deletion of debt records,
+ * including balance calculations and adjustments.
  */
+
 class CustomerDebtService
 {
     /**
-     * Create a new debt record with proper balance calculation.
+     * Create a new debt record for a customer and calculate updated balance.
      *
-     * @param array $data {
-     *     @var int      $store_id  Required. The store ID
-     *     @var float    $credit    Optional. The credit amount (positive value)
-     *     @var float    $debit     Optional. The debit amount (positive value)
-     *     @var string   $debt_date Optional. The date of the transaction
-     *     @var string   $details   Optional. Additional details
-     * }
-     * @return array Response array with status, message and data
+     * @param array $data Debt details including credit/debit, customer ID, and optional receipt.
+     * @return array Response array containing status, message, and data.
      */
-    public function createDebt($data)
+
+    public function createCustomerDebt($data)
     {
         try {
             // Get the current balance from the most recent debt record
-            $currentBalance = Debt::where('store_id', $data['store_id'])
+            $currentBalance = CustomerDebts::where("customer_id", $data['customer_id'])
                                   ->latest('created_at')
                                   ->value('total_balance') ?? 0;
 
@@ -42,8 +40,8 @@ class CustomerDebtService
             }
 
             // Create the new debt record
-            $debt = Debt::create([
-                'store_id' => $data['store_id'],
+            $debt = CustomerDebts::create([
+                'customer_id' => $data['customer_id'],
                 'credit' => $data['credit'] ?? 0,
                 'debit' => $data['debit'] ?? 0,
                 'debt_date' => $data['debt_date'] ?? now(),
@@ -59,25 +57,27 @@ class CustomerDebtService
         }
     }
 
+
     /**
-     * Update an existing debt record with proper balance recalculation.
-     *
-     * @param array $data Updated values (same structure as createDebt)
-     * @param Debt $debt The debt record to update
-     * @return array Response array with status, message and data
-     */
-    public function updateDebt($data, Debt $debt)
+      * Update an existing debt record and recalculate the balance history.
+      *
+      * @param array $data Updated debt details.
+      * @param CustomerDebts $customerDebt The existing debt record to update.
+      * @return array Response array containing status, message, and updated data.
+      */
+
+    public function updateCustomerDebt($data, CustomerDebts $CustomerDebts)
     {
         DB::beginTransaction();
         try {
-            $debt->update([
+            $CustomerDebts->update([
                 'credit' => $data['credit'] ?? 0,
                 'debit' => $data['debit'] ?? 0,
-                'debt_date' => $data['debt_date'] ?? $debt->debt_date,
-                'receipt_id' => $data['receipt_id'] ?? $debt->receipt_id,
+                'debt_date' => $data['debt_date'] ?? $CustomerDebts->debt_date,
+                'receipt_id' => $data['receipt_id'] ?? $CustomerDebts->receipt_id,
             ]);
 
-            $debts = Debt::where('store_id', $debt->store_id)
+            $debts = CustomerDebts::where('customer_id', $CustomerDebts->customer_id)
                 ->orderBy('id')
                 ->get();
 
@@ -88,7 +88,7 @@ class CustomerDebtService
             }
 
             DB::commit();
-            return $this->successResponse($debt, 'تم تحديث الدين بنجاح.');
+            return $this->successResponse($CustomerDebts, 'تم تحديث الدين بنجاح.');
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Update debt error: ' . $e->getMessage());
@@ -96,26 +96,30 @@ class CustomerDebtService
         }
     }
 
+
     /**
-     * Delete a debt record and adjust subsequent balances.
-     *
-     * @param Debt $debt The debt record to delete
-     * @return array Response array with status and message
-     */
-    public function deleteDebt(Debt $debt)
+         * Delete a debt record and trigger balance adjustment via event.
+         *
+         * @param CustomerDebts $customerDebt The debt record to be deleted.
+         * @return array Response array indicating deletion success or failure.
+         */
+
+    public function deleteCustomerDebt(CustomerDebts $CustomerDebts)
     {
         try {
+            Log::error('Delete debt error:', ['CustomerDebts' => $CustomerDebts->toArray()]);
+
             // Handle balance adjustment before deletion
-            if (!empty($debt->credit)) {
-                $adjustment = -$debt->credit;
-                event(new DebtProcessed($debt->id, $debt->store_id, $adjustment));
+            if (!empty($CustomerDebts->credit)) {
+                $adjustment = -$CustomerDebts->credit;
+                event(new DebtProcessed($CustomerDebts->id, $CustomerDebts->customer_id, $adjustment));
             } elseif (!empty($debt->debit)) {
-                $adjustment = $debt->debit;
-                event(new DebtProcessed($debt->id, $debt->store_id, $adjustment));
+                $adjustment = $CustomerDebts->debit;
+                event(new DebtProcessed($CustomerDebts->id, $CustomerDebts->customer_id, $adjustment));
             }
 
             // Delete the record
-            $debt->delete();
+            $CustomerDebts->delete();
             return $this->successResponse(null, 'تم حذف الدين بنجاح.');
         } catch (Exception $e) {
             Log::error('Delete debt error: ' . $e->getMessage());
@@ -124,35 +128,35 @@ class CustomerDebtService
     }
 
     /**
-     * Generate a standardized success response.
+     * Generate a success response with standardized format.
      *
-     * @param mixed $data The response data payload
-     * @param string $message Success message
-     * @param int $status HTTP status code (default: 200)
-     * @return array Structured response array
+     * @param mixed $data Response data.
+     * @param string $message Success message.
+     * @param int $status HTTP status code (default: 200).
+     * @return array Formatted success response.
      */
     private function successResponse($data, string $message, int $status = 200): array
     {
         return [
             'message' => $message,
-            'status' => $status,
-            'data' => $data,
+            'status'  => $status,
+            'data'    => $data,
         ];
     }
 
     /**
-     * Generate a standardized error response.
+     * Generate an error response with standardized format.
      *
-     * @param string $message Error message
-     * @param int $status HTTP status code (default: 500)
-     * @return array Structured response array
+     * @param string $message Error message.
+     * @param int $status HTTP status code (default: 500).
+     * @return array Formatted error response.
      */
     private function errorResponse(string $message, int $status = 500): array
     {
         return [
             'message' => $message,
-            'status' => $status,
-            'data' => null,
+            'status'  => $status,
+            'data'    => null,
         ];
     }
 }
