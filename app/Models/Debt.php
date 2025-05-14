@@ -10,7 +10,7 @@ class Debt extends Model
 
     protected $fillable = ['store_id', 'credit', 'debit', 'debt_date', 'total_balance', 'receipt_id'];
 
-
+    protected $table = 'debts2';
     protected $casts = [
         'store_id' => 'integer',
         'credit' => 'integer',
