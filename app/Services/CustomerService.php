@@ -53,10 +53,10 @@ class CustomerService
     {
         try {
             // Fetch the customer along with their debts
-            $customer = Customer::with(['customerdebts'])->findOrFail($id);
+            $customer = Customer::findOrFail($id);
 
             // Return success response with debts
-            return $this->successResponse($customer, 'تم استرجاع ديون العميل بنجاح', 200);
+            return $this->successResponse($customer->customerdebts, 'تم استرجاع ديون العميل بنجاح', 200);
         } catch (Exception $e) {
             // Log error details for debugging
             Log::error('خطأ أثناء استرجاع ديون العميل: ' . $e->getMessage());

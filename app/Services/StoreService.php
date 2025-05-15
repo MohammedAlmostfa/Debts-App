@@ -48,9 +48,9 @@ class StoreService
     {
         try {
 
-            $store = Store::with(['debts'])->findOrFail($id);
+            $store = Store::findOrFail($id);
 
-            return $this->successResponse($store, 'تم استرجاع ديون المتجر بنجاح', 200);
+            return $this->successResponse($store->debts, 'تم استرجاع ديون المتجر بنجاح', 200);
         } catch (Exception $e) {
             Log::error('خطأ أثناء استرجاع ديون المتجر: ' . $e->getMessage());
 
