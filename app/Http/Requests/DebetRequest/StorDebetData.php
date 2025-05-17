@@ -31,10 +31,10 @@ class StorDebetData extends FormRequest
     {
         return [
             'store_id' => 'required|integer|exists:stores,id',
-            'credit' => 'nullable|numeric|min:0|required_without:debit',
-            'debit'  => 'nullable|numeric|min:0|required_without:credit',
+            'credit' => 'nullable|integer|min:0|required_without:debit',
+            'debit'  => 'nullable|integer|min:0|required_without:credit',
             'debt_date' => 'nullable|date|before_or_equal:now',
-            'receipt_id' => 'nullable|numeric|',
+            'receipt_id' => 'nullable|integer|',
         ];
     }     protected function failedValidation(Validator $validator): void
     {

@@ -24,10 +24,10 @@ class UpdateDebetData extends FormRequest
     public function rules(): array
     {
         return [
-            'credit' => 'nullable|numeric|min:0',
-            'debit'  => 'nullable|numeric|min:0',
+            'credit' => 'nullable|integer|min:0',
+            'debit'  => 'nullable|integer|min:0',
             'debt_date' => 'nullable|date|before:now',
-               'receipt_id' => 'nullable|numeric'
+               'receipt_id' => 'nullable|integer'
         ];
     }
     protected function failedValidation(Validator $validator): void
